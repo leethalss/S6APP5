@@ -15,13 +15,18 @@
 #include <BLEBeacon.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <ESPAsyncWebServer.h>
 
-const char* ssid = "Air";
-const char* password = "Sharks11";
-const char* serverIP = "192.168.161.182";
+const char* ssid = "WorkingStation";
+const char* password = "12345678";
+const char* serverIP = "192.168.137.149";
 
 int scanTime = 5; //In seconds
 BLEScan *pBLEScan;
+
+#define LED_PIN 18
+AsyncWebServer server(80);
+int pinState = 0;
 
 void PostRequest(std::string message);
 
@@ -138,6 +143,8 @@ void PostRequest(std::string message)
 void setup()
 {
   Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+
   Serial.println("Scanning...");
 
   BLEDevice::init("");
@@ -164,6 +171,23 @@ void setup()
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+
+  server.on("/LED", HTTP_GET, [](AsyncWebServerRequest *request){
+        if (pinState == 0)
+        {
+          digitalWrite(LED_PIN, HIGH);
+          request->send(200, "text/plain", "LED is ON");
+          pinState = 1;
+        }
+        else if (pinState == 1)
+        {
+          digitalWrite(LED_PIN, LOW);
+          request->send(200, "text/plain", "LED is OFF");
+          pinState = 0;
+        }
+    });
+
+  server.begin();
 }
 
 void loop()
@@ -171,6 +195,5 @@ void loop()
   // put your main code here, to run repeatedly:
   BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
   pBLEScan->clearResults(); // delete results fromBLEScan buffer to release memory
-
-  delay(5000);
+  //delay(5000);
 }
