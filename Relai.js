@@ -6,7 +6,7 @@ const app = express();
 const port = 3001;
 
 const host = 'mqtt://localhost:1883'; // Remplacez par l'adresse de votre serveur Mosquitto
-const topic = 'entre/sortie'; // Remplacez par votre topic
+const topic = 'Entre/Sortie'; // Remplacez par votre topic
 
 // Connexion au serveur MQTT
 const client = mqtt.connect(host);
