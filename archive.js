@@ -30,8 +30,9 @@ client.on('connect', () => {
 });
 
 client.on('message', (topic, message) => {
-  const id = message.toString();
-  processMessage(id);
+    const parsedMessage = JSON.parse(message.toString());
+    const id = parsedMessage.data;
+    processMessage(id);
 });
 
 function processMessage(id) {
