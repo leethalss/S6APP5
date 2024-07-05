@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Archives</title>
+  <title>Interface Graphique</title>
   <style>
     table {
       width: 100%;
@@ -39,5 +39,31 @@
       <% }); %>
     </tbody>
   </table>
+
+  <button id="postButton">Envoyer Message</button>
+
+  <script>
+    document.getElementById('postButton').addEventListener('click', async () => {
+      const message = 'Test';
+      try {
+        const response = await fetch('http://localhost:3000/UI', {
+          method: 'POST',
+          body: message,
+          headers: {
+            'Content-Type': 'text/plain; charset=UTF-8'
+          }
+        });
+
+        if (response.ok) {
+          const responseData = await response.text();
+          console.log('Réponse du serveur:', responseData);
+        } else {
+          console.error('Erreur lors de l\'envoi de la requête');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    });
+  </script>
 </body>
 </html>

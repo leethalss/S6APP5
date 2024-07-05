@@ -59,6 +59,7 @@ function processMessage(id) {
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.text()); // Pour gérer le type de contenu text/plain
 
 app.get('/', (req, res) => {
   db.all('SELECT * FROM archives', [], (err, rows) => {
@@ -69,8 +70,14 @@ app.get('/', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Web server running on http://localhost:3000');
+app.post('/UI', (req, res) => {
+  const message = req.body;
+  console.log('Message reçu:', message);
+  res.send(`Message reçu: ${message}`);
+});
+
+app.listen(4000, () => {
+  console.log('Web server running on http://localhost:4000');
 });
 
 process.on('exit', () => {
