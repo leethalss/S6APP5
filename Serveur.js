@@ -1,10 +1,26 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const axios = require('axios');
 
 const app = express();
 const port = 3000;
+const esp32IP = '192.168.137.89';
 
 app.use(bodyParser.text());
+
+app.post('/UI', async (req, res) => {
+  const message = req.body;
+  console.log(`Bouton reçu : ${message}`);
+  res.send('Message reçu');
+
+  try {
+    const response = await axios.get(`http://${esp32IP}/LED`);
+    console.log(`Réponse de l'ESP32 : ${response.data}`);
+  } catch (error) {
+    console.error(`Erreur lors de l'envoi du signal à l'ESP32 : ${error}`);
+    res.status(500).send('Erreur lors de l\'envoi du signal');
+  }
+})
 
 app.post('/UUID', (req, res) => {
     const message = req.body;
